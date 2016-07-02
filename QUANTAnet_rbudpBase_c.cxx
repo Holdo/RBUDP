@@ -64,7 +64,7 @@ void QUANTAnet_rbudpBase_c::passiveUDP(char *host) {
         exit(1);
     }
 
-    bzero((char *) &udpServerAddr, sizeof(udpServerAddr));
+    memset((char *) &udpServerAddr, 0, sizeof(udpServerAddr));
     udpServerAddr.sin_family = AF_INET;
     udpServerAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     udpServerAddr.sin_port = htons(udpLocalPort);
@@ -75,7 +75,7 @@ void QUANTAnet_rbudpBase_c::passiveUDP(char *host) {
     }
 
     // Use connected UDP to receive only from a specific host and port.
-    bzero(&cliaddr, sizeof(cliaddr));
+    memset(&cliaddr, 0, sizeof(cliaddr));
     if (phe = gethostbyname(host))
         memcpy(&cliaddr.sin_addr, phe->h_addr, phe->h_length);
     else if ((cliaddr.sin_addr.s_addr = inet_addr(host)) == INADDR_NONE) {
@@ -100,7 +100,7 @@ int QUANTAnet_rbudpBase_c::connectTCP(char *host) {
     struct timeval start, now;
 
     /*Create a TCP connection */
-    bzero((char *) &tcpServerAddr, sizeof(tcpServerAddr));
+    memset((char *) &tcpServerAddr, 0, sizeof(tcpServerAddr));
     tcpServerAddr.sin_family = AF_INET;
     if (phe = gethostbyname(host))
         memcpy(&tcpServerAddr.sin_addr, phe->h_addr, phe->h_length);
@@ -131,7 +131,7 @@ void QUANTAnet_rbudpBase_c::connectUDP(char *host) {
 
     // Fill in the structure with the address of the server that we want to send to
     // udpServerAddr is class global variable, will be used to send data
-    bzero(&udpServerAddr, sizeof(udpServerAddr));
+    memset(&udpServerAddr, 0, sizeof(udpServerAddr));
     udpServerAddr.sin_family = AF_INET;
     if (phe = gethostbyname(host))
         memcpy(&udpServerAddr.sin_addr, phe->h_addr, phe->h_length);
@@ -155,7 +155,7 @@ void QUANTAnet_rbudpBase_c::connectUDP(char *host) {
     }
 
     /* Bind any local address for us */
-    bzero(&udpClientAddr, sizeof(udpClientAddr));
+    memset(&udpClientAddr, 0, sizeof(udpClientAddr));
     udpClientAddr.sin_family = AF_INET;
     udpClientAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     udpClientAddr.sin_port = htons(udpLocalPort);
@@ -184,7 +184,7 @@ void QUANTAnet_rbudpBase_c::initTCPServer() {
     }
 
     /* Bind our local address so that the client can send to us */
-    bzero(&tcpServerAddr, sizeof(tcpServerAddr));
+    memset(&tcpServerAddr, 0, sizeof(tcpServerAddr));
     tcpServerAddr.sin_family = AF_INET;
     tcpServerAddr.sin_addr.s_addr = htonl(INADDR_ANY);
     tcpServerAddr.sin_port = htons(tcpPort);
@@ -229,7 +229,7 @@ int QUANTAnet_rbudpBase_c::readn(register int fd, register char *ptr, register i
     return (nbytes - nleft);
 }
 
-int QUANTAnet_rbudpBase_c::writen(register int fd, register char *ptr, register int nbytes) {
+int QUANTAnet_rbudpBase_c::writen(register int fd, register char const *ptr, register int nbytes) {
     int nleft, nwritten;
 
     nleft = nbytes;
@@ -258,7 +258,7 @@ void QUANTAnet_rbudpBase_c::initErrorBitmap() {
     int i;
     // the first byte is 0 if there is error.  1 if all done.
     int startOfLastByte = totalNumberOfPackets - (sizeofErrorBitmap - 2) * 8;
-    char bits[8] = {0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
+    unsigned char bits[8] = {0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
 
     /* The first byte is for judging all_done */
     for (i = 0; i < sizeofErrorBitmap; i++)
@@ -298,7 +298,7 @@ int  QUANTAnet_rbudpBase_c::ptohseq(int origseq) {
 
 void QUANTAnet_rbudpBase_c::updateErrorBitmap(long long seq) {
     long long index_in_list, offset_in_index;
-    char bits[8] = {0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
+    unsigned char bits[8] = {0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
     if (peerswap)
         seq = swab32(seq);
     if (seq < 0 || (seq >> 3) >= sizeofErrorBitmap - 1) {
@@ -326,7 +326,7 @@ void QUANTAnet_rbudpBase_c::updateErrorBitmap(long long seq) {
 int QUANTAnet_rbudpBase_c::updateHashTable() {
     int count = 0;
     int i, j;
-    char bits[8] = {0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
+    unsigned char bits[8] = {0x0001, 0x0002, 0x0004, 0x0008, 0x0010, 0x0020, 0x0040, 0x0080};
 
     for (i = 1; i < sizeofErrorBitmap; i++) {
         for (j = 0; j < 8; j++) {

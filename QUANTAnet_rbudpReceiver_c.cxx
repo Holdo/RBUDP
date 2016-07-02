@@ -41,7 +41,7 @@
   }  while(0)
 */
 
-inline void TRACE_DEBUG(char *format, ...) {
+inline void TRACE_DEBUG(char const *format, ...) {
     va_list arglist;
     va_start(arglist, format);
     vfprintf(stderr, format, arglist);
@@ -134,7 +134,7 @@ void QUANTAnet_rbudpReceiver_c::udpReceiveReadv() {
             }
                 // if some packets lost before this packet, move this packet backward
             else if (rcvseq > seqno) {
-                bcopy(iovRecv[1].iov_base, (char *) mainBuffer + (rcvseq * payloadSize), iovRecv[1].iov_len);
+                memmove((char *) mainBuffer + (rcvseq * payloadSize), iovRecv[1].iov_base, iovRecv[1].iov_len);
                 updateErrorBitmap(rcvseq);
                 // missed some packets, next expected packet
                 do packetno++;
@@ -187,7 +187,7 @@ void QUANTAnet_rbudpReceiver_c::udpReceive() {
         // receiving a packet
         if (FD_ISSET(udpSockfd, &rset)) {
             int temp = recv(udpSockfd, msg, packetSize, 0);
-            bcopy(msg, &recvHeader, sizeof(struct _rbudpHeader));
+            memmove(&recvHeader, msg, sizeof(struct _rbudpHeader));
             seqno = ptohseq(recvHeader.seq);
 
             // If the packet is the last one,
@@ -198,7 +198,7 @@ void QUANTAnet_rbudpReceiver_c::udpReceive() {
                 actualPayloadSize = lastPayloadSize;
             }
 
-            bcopy(msg + headerSize, (char *) mainBuffer + (seqno * payloadSize), actualPayloadSize);
+            memmove((char *) mainBuffer + (seqno * payloadSize), msg + headerSize, actualPayloadSize);
 
             updateErrorBitmap(seqno);
 
@@ -366,7 +366,7 @@ int QUANTAnet_rbudpReceiver_c::getfilelist(char *fileList, int packetSize) {
     }
 
     // send all zero block to end the sender.
-    bzero(str, SIZEOFFILENAME);
+    memset(str, 0, SIZEOFFILENAME);
     if (writen(tcpSockfd, str, SIZEOFFILENAME) != SIZEOFFILENAME) {
         perror("Error Tcp Send");
         exit(1);

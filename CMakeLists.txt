@@ -3,20 +3,20 @@ project(RBUDP)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES
-    QUANTAnet_rbudpBase_c.cxx
-    QUANTAnet_rbudpBase_c.hxx
-    QUANTAnet_rbudpReceiver_c.cxx
-    QUANTAnet_rbudpReceiver_c.hxx
-    QUANTAnet_rbudpSender_c.cxx
-    QUANTAnet_rbudpSender_c.hxx
-    recvfile.cxx
-    recvfilelist.cxx
-    recvstream.cxx
-    sendfile.cxx
-    sendfilelist.cxx
-    sendstream.cxx
-    urecv.cxx
-    usend.cxx)
+set(SENDFILE_SOURCES sendfile.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpSender_c.cxx)
+set(RECVFILE_SOURCES recvfile.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpReceiver_c.cxx)
+set(USEND_SOURCES usend.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpSender_c.cxx)
+set(URECV_SOURCES urecv.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpReceiver_c.cxx)
+set(SENDFILELIST_SOURCES sendfilelist.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpSender_c.cxx)
+set(RECVFILELIST_SOURCES recvfilelist.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpReceiver_c.cxx)
+set(SENDSTREAM_SOURCES sendstream.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpSender_c.cxx)
+set(RECVSTREAM_SOURCES recvstream.cxx QUANTAnet_rbudpBase_c.cxx QUANTAnet_rbudpReceiver_c.cxx)
 
-add_executable(RBUDP ${SOURCE_FILES})
+add_executable(sendfile ${SENDFILE_SOURCES})
+add_executable(recvfile ${RECVFILE_SOURCES})
+add_executable(usend ${USEND_SOURCES})
+add_executable(urecv ${URECV_SOURCES})
+add_executable(sendfilelist ${SENDFILELIST_SOURCES})
+add_executable(recvfilelist ${RECVFILELIST_SOURCES})
+add_executable(sendstream ${SENDSTREAM_SOURCES})
+add_executable(recvstream ${RECVSTREAM_SOURCES})

@@ -23,6 +23,9 @@
 #ifndef _QUANTAPLUS_RBUDPBASE_C
 #define _QUANTAPLUS_RBUDPBASE_C
 
+#include <string>
+#include <iostream>
+#include <limits.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -31,6 +34,7 @@
 #include <fcntl.h>
 #include <sys/signal.h>
 #include <errno.h>
+#include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -159,7 +163,7 @@ protected:
     int readn(register int fd, register char *ptr, register int nbytes);
 
     /// Write nbytes bytes to TCP connection
-    int writen(register int fd, register char *ptr, register int nbytes);
+    int writen(register int fd, register char const *ptr, register int nbytes);
 
     /// Initialize the bitmap
     void initErrorBitmap();

@@ -69,8 +69,7 @@ int getnumber(char *str, char *why, int vmin, int vmax, float dscale = 1, float 
 }
 
 
-int
-main(int argc, char **argv) {
+int main(int argc, char **argv) {
     char *buf;
     int verbose = 1;
     prog = argv[0];
@@ -82,8 +81,7 @@ main(int argc, char **argv) {
         verbose++, argc--, argv++;
 
     if (argc < 6) {
-        printf
-                ("Usage: usend [-q|-v] <receiver> <bytes-to-transfer[k|m|g]> <send-rate(Kbit/s unless k|m|g suffix)> <packetsize> <numITERs> [<port>]\n\
+        printf("Usage: usend [-q|-v] <receiver> <bytes-to-transfer[k|m|g]> <send-rate(Kbit/s unless k|m|g suffix)> <packetsize> <numITERs> [<port>]\n\
 Tests memory-to-memory speed of RBUDP block network transfers.\n\
 Start \"usend\" first, then \"urecv\".  \"-q\"=> quiet, \"-v\"=>verbose.  E.g.:\n\
   (on hostA)   usend  hostB  256m  800m  1460  4\n\

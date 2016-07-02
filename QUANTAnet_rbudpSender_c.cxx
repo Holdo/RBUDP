@@ -41,7 +41,7 @@
   }  while(0)
 */
 
-inline void TRACE_DEBUG(char *format, ...) {
+inline void TRACE_DEBUG(char const *format, ...) {
     va_list arglist;
     va_start(arglist, format);
     vfprintf(stderr, format, arglist);
@@ -176,8 +176,8 @@ void QUANTAnet_rbudpSender_c::udpSend() {
                 actualPayloadSize = lastPayloadSize;
             }
             sendHeader.seq = hashTable[i];
-            bcopy(&sendHeader, msg, headerSize);
-            bcopy((char *) ((char *) mainBuffer + (sendHeader.seq * payloadSize)), msg + headerSize, actualPayloadSize);
+            memmove(msg, &sendHeader, headerSize);
+            memmove(msg + headerSize, (char *) ((char *) mainBuffer + (sendHeader.seq * payloadSize)), actualPayloadSize);
 
             //TRACE_DEBUG("sent %d, packet size: %d", sendHeader.seq, actualPayloadSize+headerSize);
             if (sendto(udpSockfd, msg, actualPayloadSize + headerSize, 0, (const struct sockaddr *) &udpServerAddr,
@@ -289,7 +289,7 @@ int QUANTAnet_rbudpSender_c::sendfilelist(int sendRate, int packetSize) {
 
         // If not "finish" signal (All zero), continue to send.
         char test[SIZEOFFILENAME];
-        bzero((void *) test, SIZEOFFILENAME);
+        memset((void *) test, 0, SIZEOFFILENAME);
         if (strcmp(test, fname) != 0) {
 
             fprintf(stderr, "Send file %s\n", fname);
