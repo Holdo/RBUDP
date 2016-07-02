@@ -1,0 +1,54 @@
+To Transfer a list of files between two end-nodes
+-----------------------------------------
+-----------------------------------------
+The following step are needed to transfer a list(set) of files between two end-nodes
+
+A. On the Sender side
+---------------------
+Execute the sendfilelist on the node where the data files are present
+Typical command to execute is:
+
+sendfilelist <receiver> <sending rate (Kbps)> <port> <MTU>
+
+where:
+<receiver> is the IP address of the receiver
+
+<sending rate in Kbps> eg. 700000 to get 700Mbps network transfer or memory to memory speeds. Disk speeds are typically slower than network speeds.
+
+<port> i.e the port where the server will be initialized eg. 7000
+
+<MTU> if 1500 MTU then you can specify 1460 for transport protocol
+if MTU == 9000, we typically use 8192 for efficient memory/page usage
+
+
+
+B. On the Receiver Side
+-----------------------
+
+Execute the recvfilelist on the receiver 
+Typical command to execute is:
+
+recvfilelist <sender> <filelist> <port> <MTU>
+
+where:
+<sender> is the IP address of the sender
+
+<filelist> A textfile that contains the list of file on the sender side and the path of the destination file on the receiver.The separator is a blank space.
+Details in the NOTES section below.
+
+<port> i.e the port where the server is running eg.if the server is running on the sender at 7000, the value would be 7000 
+
+<MTU> if 1500 MTU then you can specify 1460 for transport protocol
+if MTU == 9000, we typically use 8192 for efficient memory/page usage
+
+--------------------------------------------------------------------
+-------------------------------------------------------------------
+
+NOTES:
+
+1. The MTU sizes on the sender and receiver that is specified on the sender and receiver side must be identical. It crashes as the check is not being made. In future the smaller of the two will be chosen as the consensus value.
+
+2. The format is 
+<complete path of file on sender> <complete path of file of receiver>
+
+Check filelist.txt for a sample file

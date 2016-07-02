@@ -1,0 +1,58 @@
+Changes contributed by slevy@ncsa.uiuc.edu
+
+   The file(list) apps were exchanging long long file-size values,
+   but using htonl()/ntohl() to convert them.  I think this doesn't work,
+   so added htonll()/ntohll() functions.
+
+   Also checked sanity of packet-sequence values in each data packet.
+   If they're out of range, but byte-swapping makes them reasonable,
+   then do so for that and all following packets.  This autodetects
+   having two ends with different byte order.  But we shouldn't have
+   to do it this way; better to have an explicit negotiation,
+   or a network-byte-order convention or something.
+
+   The file/filelist apps are still awkward though -- they map
+   in the entire file at once, so they fail on files too large
+   to fit in virtual memory.  Shipping large numbers of small files
+   works, but very inefficiently, since we pay the transfer-startup
+   cost on every single one.
+
+   So added new methods sendstream() and getstream(),
+   which support new apps "sendstream" and "recvstream",
+   intended for shipping arbitrary-length byte streams.
+   Typical use (see their Usage messages) might be:
+
+     tar cf - somedir | sendstream <receiverhost> 600m 1460
+
+     recvstream <senderhost> 1460 | tar xvpf -
+
+   Changed a bunch of library printf's to fprintf(stderr)'s
+   to avoid cluttering stdout so recvstream could work. 
+
+   Instantiated each of the "static const int"s in
+   the QUANTAnet_rbudpBase_c.cxx file; otherwise *some* linkers
+   (Altix ia64 at least) call them undefined at link time.
+   (How can a compile-time constant be undefined at link time??)
+
+   Set the socket-buffer size to 8MB by default, change-able by
+   calling QUANTAnet_rbudpBase_c::setUDPBufSize() before starting
+   to send/receive.
+
+   Adjustable verbose-ness from 0 (quiet, only serious errors shown),
+   1 (packet-loss stats), to 2 (as verbose as ever).
+   New setverbose() method call sets it, and -q/-v options in
+   usend/urecv/sendstream/recvstream apps use it.
+   The apps' default (neither -q nor -v) is 1.
+
+   Disabled writing "progress.log" file unless verboseness is 2.
+
+   Add block-size (default -b 64M) and port-number (default -p 38000)
+   options to send/recvstream.
+
+   Rearranged the parameter order on usend/urecv to make a little more sense.
+
+   Made helpful Usage messages on sendstream/recvstream and usend/urecv.
+
+   Packet-loss stats messages include transfer size and performance estimates.
+
+     - Stuart Levy, slevy@ncsa.uiuc.edu, July - Dec 2006

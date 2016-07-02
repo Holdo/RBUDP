@@ -1,0 +1,47 @@
+To Transfer a file between two end-nodes
+-----------------------------------------
+-----------------------------------------
+The following step are needed to transfer a file between two end-nodes
+
+A. On the Sender side
+---------------------
+Execute the sendfile on the node where the data file is present
+Typical command to execute is:
+
+sendfile <receiver> <sending rate (Kbps)> <MTU>
+where:
+<receiver> is the IP address of the receiver
+
+<sending rate in Kbps> eg. 700000 to get 700Mbps network transfer or memory to memory speeds. Disk speeds are typically slower than network speeds.
+
+<MTU> if 1500 MTU then you can specify 1460 for transport protocol
+if MTU == 9000, we typically use 8192 for efficient memory/page usage
+
+B. On the Receiver Side
+-----------------------
+
+Execute the recvfile on the receiver 
+Typical command to execute is:
+
+recvfile <sender> <path to the orig file> <path to the dest file name> <MTU>
+
+where:
+<sender> is the IP address of the sender
+
+<path to the orig file> This is the complete path to the file on the sender
+
+<path to the dest file name> This is the complete path of the file on the receiver.
+
+<MTU> if 1500 MTU then you can specify 1460 for transport protocol
+if MTU == 9000, we typically use 8192 for efficient memory/page usage
+
+--------------------------------------------------------------------
+-------------------------------------------------------------------
+
+NOTES:
+1. The port being used is 38000. You can modify this in sendfile.cxx and recvfile.cxx if you have firewall issues.
+
+2. The MTU sizes on the sender and receiver that is specified on the sender and receiver side must be identical. It crashes as the check is not being made. In future the smaller of the two will be chosen as the consensus value.
+
+
+
