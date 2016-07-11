@@ -24,7 +24,7 @@
 
 char *prog;
 
-int getnumber(char *str, char *why, int vmin, int vmax) {
+int getnumber(char *str, char const *why, int vmin, int vmax) {
     int iv;
     float v;
     int ok = 1;
